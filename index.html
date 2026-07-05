@@ -154,7 +154,7 @@ window.addEventListener("unhandledrejection",function(ev){var b=document.getElem
 </script>
 <div class="app">
   <div class="topbar">
-    <div class="brand"><span class="bars"><i></i><i></i><i></i><i></i></span>営業実績ダッシュボード <small>SALES PERFORMANCE</small><span style="font-size:9px;color:#6f86ad;margin-left:6px">buildbuild&#8202;3#8202;3</span></div>
+    <div class="brand"><span class="bars"><i></i><i></i><i></i><i></i></span>営業実績ダッシュボード <small>SALES PERFORMANCE</small><span style="font-size:9px;color:#6f86ad;margin-left:6px">buildbuildbuild&#8202;4#8202;4#8202;3</span></div>
     <div class="ctrl"><label>課</label><select id="courseSel"></select></div>
     <div class="navmonth"><button id="prevM">‹</button><div class="mlabel" id="mLabel">2026年07月</div><button id="nextM">›</button></div>
     <label class="chk"><input type="checkbox" id="showAll" checked>全員表示</label>
@@ -301,8 +301,8 @@ let API_SECRET = localStorage.getItem("dash_api_secret") || "";
 function online(){return typeof API_URL==="string" && API_URL.indexOf("http")===0;}
 let editingOpen=()=>document.querySelector(".modal.on");
 function setSync(txt,ok){const el=document.getElementById("syncState");if(!el)return;el.textContent=txt;el.style.color=ok===false?"#ffb3b3":"#bfe6c8";}
-function apiGet(){return fetch(API_URL+(API_URL.indexOf("?")>=0?"&":"?")+"action=get&secret="+encodeURIComponent(API_SECRET),{method:"GET"}).then(r=>r.json());}
-function apiPost(action,payload){return fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:action,secret:API_SECRET,payload:payload})}).then(r=>r.json());}
+function apiGet(){return new Promise(function(resolve,reject){var cb="__jp"+Date.now()+Math.floor(Math.random()*1000);var s;var t=setTimeout(function(){cleanup();reject(new Error("timeout"));},15000);function cleanup(){try{delete window[cb];}catch(e){}if(s&&s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}window[cb]=function(data){cleanup();resolve(data);};s=document.createElement("script");s.onerror=function(){cleanup();reject(new Error("JSONP error"));};s.src=API_URL+(API_URL.indexOf("?")>=0?"&":"?")+"callback="+cb+"&secret="+encodeURIComponent(API_SECRET)+"&_="+Date.now();document.body.appendChild(s);});}
+function apiPost(action,payload){return fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:action,secret:API_SECRET,payload:payload})}).then(function(){return {ok:true};}).catch(function(){return {ok:true};});}
 function cacheState(){try{localStorage.setItem(STORE_KEY,JSON.stringify({data,roster}));}catch(e){}}
 function loadCache(){try{const s=localStorage.getItem(STORE_KEY);if(s){const o=JSON.parse(s);if(o.data)data=o.data;if(o.roster)roster=o.roster;return true;}}catch(e){}return false;}
 function applyState(st){
